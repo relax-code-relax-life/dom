@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+
+<div id="parent">
+    <button id="btn">btn</button>
+    <div id="virtualBtn">btn</div>
+</div>
+
+<script>
+
+    var handler= function (e) {
+        console.log('======')
+        console.log(e.currentTarget);
+        console.log(this);
+        console.dir(e)
+    };
+
+    document.querySelector('#btn').addEventListener('click',handler);
+    document.querySelector('#parent').addEventListener('click',handler);
+    document.querySelector('#virtualBtn').addEventListener('click',handler);
+
+</script>
+</body>
+</html>
