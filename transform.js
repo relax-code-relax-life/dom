@@ -7,7 +7,7 @@ var file = __dirname + '/index.js';
 var babelResult = babel.transformFileSync(file,
     {
         presets: [
-            ['env', {modules: 'umd'}]
+            ['env', {modules: 'commonjs'}]
         ]
     }
 );
