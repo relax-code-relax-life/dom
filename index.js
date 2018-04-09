@@ -443,4 +443,5 @@ $.create = function (html) {
     }
     return fragment;
 }
+
 export default $;

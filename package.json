@@ -1,11 +1,17 @@
 {
   "name": "wwl-dom",
   "version": "1.0.0",
-  "description": "",
+  "description": "naive dom utils.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "node transform.js"
   },
-  "author": "",
-  "license": "ISC"
+  "author": "wangweilin(wwl)",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "uglify-es": "^3.3.9"
+  }
 }
