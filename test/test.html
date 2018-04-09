@@ -7,23 +7,49 @@
 <body>
 
 
-<div id="parent">
-    <button id="btn">btn</button>
-    <div id="virtualBtn">btn</div>
+<div id="lv1">
+    <button id="lv2_btn">lv2_btn</button>
+    <div id="lv2_div">lv2_div
+        <button id="lv3_btn">lv3_btn</button>
+    </div>
 </div>
 
 <script>
 
-    var handler= function (e) {
-        console.log('======')
-        console.log(e.currentTarget);
+    var handler = function (e) {
+        // console.log('======')
+        // console.log(e.currentTarget.id);
+        // console.log(e.composedPath(),e.path)
         console.log(this);
-        console.dir(e)
+        console.log(e.currentTarget);
+        // console.dir(e)
     };
 
-    document.querySelector('#btn').addEventListener('click',handler);
-    document.querySelector('#parent').addEventListener('click',handler);
-    document.querySelector('#virtualBtn').addEventListener('click',handler);
+    // document.querySelector('#lv1').addEventListener('click', handler);
+    // document.querySelector('#lv2_btn').addEventListener('click', handler);
+    // document.querySelector('#lv2_div').addEventListener('click', handler);
+    // document.querySelector('#lv3_btn').addEventListener('click', handler);
+
+</script>
+
+<script type="module">
+
+   import $ from '../index.js';
+
+   $('#lv1').onDelegate('click', '#lv2_div', function (e) {
+       console.log(e.target.id, e.currentTarget.id,this.id);
+   });
+
+
+</script>
+<script src="http://qa.developer.163.com/system/bowlder/src/bowlder.js"></script>
+<script>
+
+    // var bowlder=window.bowlder;
+    // bowlder('#lv1').on('click','#lv2_div', function (e) {
+    //     console.log(e.target.id, e.currentTarget.id,e);
+    //
+    // });
 
 </script>
 </body>

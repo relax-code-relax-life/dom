@@ -4,6 +4,14 @@ var slice = call.bind(Array.prototype.slice);
 var docEle = document.documentElement;
 var win = window;
 
+//fn返回布尔true，则跳出循环。
+var mapObj = function (obj, fn) {
+    var result = {};
+    for (var key in obj) {
+        result[key] = fn(obj[key], key);
+    }
+    return result;
+}
 
 var uniqArr = function (arr) {
     var result = [];
@@ -22,14 +30,21 @@ var flatArr = function (arr) {
     }, [])
 }
 
-var uniqAndFlatNodes = function (arrOfHtmlCollection) {
-    return uniqArr(
-        flatArr(
-            arrOfHtmlCollection.map(item => slice(item))
-        )
-    )
-}
+var getEventPath = function (e) {
 
+    var result = e.path || (e.composedPath && e.composedPath());
+    if (result && result.length !== 0) return result;
+
+    result = new Dom(e.target).parents();
+    result.push(window);
+    return result;
+
+};
+
+var guid = 0;
+var getGUID = function (prefix = '') {
+    return prefix + guid++;
+}
 
 var eleMatches = call.bind(Element.prototype.matches ||
     Element.prototype.matchesSelector ||
@@ -170,6 +185,15 @@ class Dom {
         return new Dom(this.map((node) => node.parentNode));
     }
 
+    parents(index = 0) {
+        var parent = this.nodes[index].parentNode;
+        var parents = [];
+        while (parent) {
+            parents.push(parent);
+        }
+        return new Dom(parents);
+    }
+
     children() {
         return new Dom(
             uniqArr(
@@ -308,17 +332,23 @@ class Dom {
 
     off(type, fn) {
         return this.each((node, index) => {
-            if (fn === undefined) {
-                let fns = getEventCache(node, type);
-                if (fns) {
-                    fns.forEach((fn) => node.removeEventListener(type, fn));
-                    clearEventCache(node, type);
-                }
+
+            var cache = getEventCache(node);
+            var type_fns = {};
+            if (!type) {
+                type_fns = cache;
             }
-            else {
-                node.removeEventListener(type, fn);
-                removeEventCache(node, type, fn);
+            else if (!fn) {
+                type_fns[type] = cache[type];
             }
+            else type_fns[type] = [fn];
+
+
+            for (var key in type_fns) {
+                type_fns[key].forEach(fn => node.removeEventListener(key, fn));
+            }
+
+            removeEventCache(node, type, fn);
 
         })
     }
@@ -326,28 +356,71 @@ class Dom {
 
     onDelegate(type, selector, fn) {
 
+        //通过on添加的事件回调，在接收到冒泡的事件时，this和e.currentTarget一致。
+        //目标是在delegate中，和on中保持一致， this和e.currentTarget为selector指定的元素。
+        //  由于currentTarget为只读不可更改，
+        //  所以，e.currentTarget仍然绑定事件的节点，this为selector指定的元素。
+
         return this.each((node) => {
 
-            let listener = function (e) {
+            var cache = getEventCache(node);
+            var wrapper = cache[type] && cache[type].find(fn => fn.isDelegate);
 
-                //事件回调中,this和e.currentTarget相同，为当前绑定事件元素。
-                let tarNodes = node.querySelectorAll(selector);
-                var i = 0, len = tarNodes.length;
-                for (; i < len; i++) {
-                    if (tarNodes[i] === e.target) {
-                        fn.apply(e.target, arguments);
+            if (!wrapper) {
+                var listener = function (e) {
+
+                    var pathNodes = getEventPath(e);
+
+                    var queryNodesList = [];
+
+                    //cache:  { selector : fns }
+                    var selector_fns_map = listener.cache;
+                    for (var s in selector_fns_map) {
+                        queryNodesList.push(
+                            {
+                                queryNodes: slice(node.querySelectorAll(s)),
+                                fns: selector_fns_map[s]
+                            }
+                        );
                     }
+
+                    var startIndex = pathNodes.length;
+                    queryNodesList.forEach(({queryNodes, fns}) => {
+
+                        for (var i = startIndex; i > -1; i--) {
+                            let cur = pathNodes[i];
+                            if (queryNodes.includes(cur)) {
+
+                                fns.forEach(fn => {
+                                    // e.currentTarget=cur;
+                                    fn.call(cur,e);
+                                    // fn.call(cur, Object.create(e, {currentTarget: {value: cur}}))
+                                })
+
+                                break;
+                            }
+                        }
+
+                    });
+
                 }
 
+                listener.cache = {[selector]: [fn]};
+                listener.isDelegate = true;
+
+                node.addEventListener(type, listener);
+                pushEventCache(node, type, listener);
+            }
+            else {
+                var selector_fns_map = wrapper.cache;
+                if (selector_fns_map[selector]) {
+                    selector_fns_map[selector].push(fn);
+                }
+                else {
+                    selector_fns_map[selector] = [fn];
+                }
             }
 
-            listener.isDelegate = true;
-            listener.selector = selector;
-            listener.callback = fn;
-
-            node.addEventListener(type, listener);
-
-            pushEventCache(node, type, listener);
         });
     }
 
@@ -358,55 +431,110 @@ class Dom {
     offDelegate(type, selector, fn) {
 
         return this.each((node) => {
-            var data = getEventCache(node, type);
-            if (!data) return;
 
-            var listeners = data.filter((fn) => fn.isDelegate);
-            if (selector) listeners = listeners.filter(fn => fn.selector === selector);
-            if (fn) listeners = listeners.filter(fn => fn.callback === fn);
+            var cache = getEventCache(node);
+            if (!cache) return;
 
-            listeners.forEach(listener => {
-                node.removeEventListener(type, listener);
-                removeEventCache(node, type, listener);
+
+            var type_listeners_map;
+
+            //offDelegate(), 缺省type，在取消对该node的所有代理监听
+            if (!type) {
+                type_listeners_map = mapObj(cache, listeners => {
+                    return listeners.filter(listener => listener.isDelegate);
+                })
+            }
+            else if (!cache[type]) return;
+            else {
+                type_listeners_map = {
+                    [type]: cache[type].filter(listener => listener.isDelegate)
+                }
+            }
+
+
+            //offDelegate(), offDelegate('click')
+            if (!selector) {
+                for (var t in type_listeners_map) {
+                    type_listeners_map[t].forEach(listener => {
+                        node.removeEventListener(t, listener);
+                        removeEventCache(node, t, listener);
+                    })
+                }
+                return;
+            }
+
+
+            //offDelegate('click','div');
+            type_listeners_map[type].forEach(listener => {
+                var cache = listener.cache;
+                if (!cache[selector]) return;
+
+                if (!fn) {
+                    cache[selector] = undefined;
+                    return;
+                }
+
+                var index = cache[selector].indexOf(fn);
+                cache[selector].splice(index, 1);
             })
+
+
         })
     }
 }
 
 
 //region event help
-const nodeExpando = function (node) {
-    var data = node._expando_event;
-    if (!data) {
-        data = node._expando_event = {};
+
+// id--> { type--> fns }
+var eventCacheMap = {};
+
+const getNodeId = function (node) {
+    var id = node._expando_e$id;
+    if (!id) {
+        id = node._expando_e$id = getGUID('node');
     }
-    return data;
+
+    return id;
 };
-const getEventCache = function (node, type) {
-    return nodeExpando(node)[type];
+const getEventCache = function (node) {
+    var id = getNodeId(node);
+    var cache = eventCacheMap[id];
+    if (!cache) cache = eventCacheMap[id] = {};
+
+    return cache
+
 };
+
 const pushEventCache = function (node, type, fn) {
-    var data = nodeExpando(node);
-    if (!data[type]) {
-        data[type] = [fn];
+
+    var cache = getEventCache(node);
+
+    if (!cache[type]) {
+        cache[type] = [fn];
     }
     else {
-        data[type].push(fn);
+        cache[type].push(fn);
     }
+
 };
 const removeEventCache = function (node, type, fn) {
-    var data = nodeExpando(node);
-    if (!data[type]) return;
-    var index = data[type].indexOf(fn);
-    if (index > -1) {
-        data[type].splice(index, 1);
+    var id = getNodeId(node);
+    var cache = eventCacheMap[id];
+
+    if (!cache) return;
+
+    if (type === undefined) {
+        eventCacheMap[id] = undefined;
     }
-    if (data[type].length === 0) {
-        delete data[type]
+
+    if (!cache[type]) return;
+    if (fn === undefined) {
+        cache[type] = undefined;
     }
-};
-const clearEventCache = function (node, type) {
-    delete nodeExpando(node)[type];
+
+    cache[type] = cache[type].filter((fn) => fn !== fn);
+    if (cache[type].length === 0) cache[type] = undefined;
 };
 
 

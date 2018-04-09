@@ -12,18 +12,21 @@ var babelResult = babel.transformFileSync(file,
     }
 );
 
-var minifyResult=UglifyJS.minify(babelResult.code,{
-    compress:{
-        drop_console:true
+var code = babelResult.code;
+
+var minifyResult = UglifyJS.minify(code, {
+    compress: {
+        drop_console: true
     },
-    output:{
-        ascii_only:true,
+    output: {
+        ascii_only: true,
     },
-    ecma:5
+    ecma: 5
 });
+code = minifyResult.code;
 
 // console.log(minifyResult.code);
 
 var distFile = __dirname + '/dist/index.js';
-fs.writeFileSync(distFile, minifyResult.code, 'utf8');
+fs.writeFileSync(distFile, code, 'utf8');
 

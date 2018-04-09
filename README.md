@@ -1,5 +1,5 @@
 # desc
-简陋的dom操作的封装。不考虑IE9一下及个别少数的兼容情况。
+简陋的dom操作的封装。不考虑IE9以下及个别少数的兼容情况。
 
 # 下载
 * npm install --save wwl-dom
