@@ -393,7 +393,7 @@ class Dom {
 
                                 fns.forEach(fn => {
                                     // e.currentTarget=cur;
-                                    fn.call(cur,e);
+                                    fn.call(cur, e);
                                     // fn.call(cur, Object.create(e, {currentTarget: {value: cur}}))
                                 })
 
@@ -524,16 +524,19 @@ const removeEventCache = function (node, type, fn) {
 
     if (!cache) return;
 
-    if (type === undefined) {
+    //removeEventCache(node)
+    if (!type) {
         eventCacheMap[id] = undefined;
     }
 
+    //removeEventCache(node,type)
     if (!cache[type]) return;
-    if (fn === undefined) {
+    if (!fn) {
         cache[type] = undefined;
     }
 
-    cache[type] = cache[type].filter((fn) => fn !== fn);
+    //removeEventCache(node,type,fn)
+    cache[type] = cache[type].filter((listener) => listener !== fn);
     if (cache[type].length === 0) cache[type] = undefined;
 };
 
@@ -550,6 +553,7 @@ const removeEventCache = function (node, type, fn) {
     });
 })
 
+// $.eventCacheMap = eventCacheMap;
 
 function $(selector) {
     if (typeof selector === 'string') {

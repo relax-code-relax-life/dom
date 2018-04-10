@@ -34,12 +34,17 @@
 
 <script type="module">
 
-   import $ from '../index.js';
+    import $ from '../index.js';
 
-   $('#lv1').onDelegate('click', '#lv2_div', function (e) {
-       console.log(e.target.id, e.currentTarget.id,this.id);
-   });
+    $('#lv1').onDelegate('click', '#lv2_div', function (e) {
+        console.log(e.target.id, e.currentTarget.id, this.id);
+    });
 
+    $('#lv2_btn').on('click', () => {
+        $('#lv1').offDelegate();
+    })
+
+    window.dom = $;
 
 </script>
 <script src="http://qa.developer.163.com/system/bowlder/src/bowlder.js"></script>
