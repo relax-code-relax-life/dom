@@ -317,8 +317,8 @@ class Dom {
     offset(index = 0) {
         var box = this[index].getBoundingClientRect();
         return {
-            x: box.left + (win.pageXOffset || docEle.scrollLeft || document.body.scrollLeft) - docEle.clientLeft,
-            y: box.top + (win.pageYOffset || docEle.scrollTop || document.body.scrollTop) - docEle.clientTop
+            left: box.left + (win.pageXOffset || docEle.scrollLeft || document.body.scrollLeft) - docEle.clientLeft,
+            top: box.top + (win.pageYOffset || docEle.scrollTop || document.body.scrollTop) - docEle.clientTop
         }
     }
 
