@@ -22,9 +22,9 @@ selector参数可以是选择器或者html元素节点，返回一个DOM对象�
 
 function( html:string ) : DocumentFragment 
 
-传入html字符，返回一个文档片段。
+传入html字符，返回一个DOM对象
 
-## DOM
+## DOM对象API
 
 ### DOM# each( fn )
 

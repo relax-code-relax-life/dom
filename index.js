@@ -30,16 +30,27 @@ var flatArr = function (arr) {
     }, [])
 }
 
-var getEventPath = function (e) {
-
-    var result = e.path || (e.composedPath && e.composedPath());
-    if (result && result.length !== 0) return result;
-
-    result = new Dom(e.target).parents();
-    result.push(window);
-    return result;
-
+var isArrayLike = function (o) {
+    return o &&
+        typeof o === 'object' &&
+        isFinite(o.length) &&
+        o.length >= 0 &&
+        o.length === Math.floor(o.length) &&
+        o.length < 4294967296 &&
+        !o.nodeType;
 };
+
+var
+    getEventPath = function (e) {
+
+        var result = e.path || (e.composedPath && e.composedPath());
+        if (result && result.length !== 0) return result;
+
+        result = new Dom(e.target).parents();
+        result.push(window);
+        return result;
+
+    };
 
 var guid = 0;
 var getGUID = function (prefix = '') {
@@ -302,9 +313,19 @@ class Dom {
     }
 
     append(newNode) {
-        return this.each(node => {
-            node.appendChild(newNode)
-        });
+
+        if (newNode.nodeType) {
+            return this.each(node => {
+                node.appendChild(newNode)
+            });
+        }
+        else if (isArrayLike(newNode)) {
+            slice(newNode).forEach(item => {
+                this.append(item);
+            })
+        }
+
+        return this;
     }
 
     remove() {
@@ -566,7 +587,7 @@ function $(selector) {
 
 
 var tmpEle = document.createElement('div');
-$.create = function (html) {
+var createFragment = function (html) {
     tmpEle.innerHTML = html;
     var fragment = document.createDocumentFragment();
     var child;
@@ -574,6 +595,10 @@ $.create = function (html) {
         fragment.appendChild(child);
     }
     return fragment;
+}
+
+$.create = function (html) {
+    return new Dom(createFragment(html).children);
 }
 
 export default $;
