@@ -40,13 +40,13 @@ var isArrayLike = function (o) {
         !o.nodeType;
 };
 
-var
-    getEventPath = function (e) {
+var getEventPath = function (e) {
 
         var result = e.path || (e.composedPath && e.composedPath());
         if (result && result.length !== 0) return result;
 
-        result = new Dom(e.target).parents();
+        result = new Dom(e.target).parents().nodes;
+        result.unshift(e.target);
         result.push(window);
         return result;
 
@@ -201,6 +201,7 @@ class Dom {
         var parents = [];
         while (parent) {
             parents.push(parent);
+            parent = parent.parentNode;
         }
         return new Dom(parents);
     }

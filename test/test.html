@@ -20,12 +20,13 @@
         // console.log('======')
         // console.log(e.currentTarget.id);
         // console.log(e.composedPath(),e.path)
+        debugger;
         console.log(this);
         console.log(e.currentTarget);
         // console.dir(e)
     };
 
-    // document.querySelector('#lv1').addEventListener('click', handler);
+    document.querySelector('#lv1').addEventListener('click', handler);
     // document.querySelector('#lv2_btn').addEventListener('click', handler);
     // document.querySelector('#lv2_div').addEventListener('click', handler);
     // document.querySelector('#lv3_btn').addEventListener('click', handler);
@@ -34,17 +35,17 @@
 
 <script type="module">
 
-    import $ from '../index.js';
-
-    $('#lv1').onDelegate('click', '#lv2_div', function (e) {
-        console.log(e.target.id, e.currentTarget.id, this.id);
-    });
-
-    $('#lv2_btn').on('click', () => {
-        $('#lv1').offDelegate();
-    })
-
-    window.dom = $;
+    // import $ from '../index.js';
+    //
+    // $('#lv1').onDelegate('click', '#lv2_div', function (e) {
+    //     console.log(e.target.id, e.currentTarget.id, this.id);
+    // });
+    //
+    // $('#lv2_btn').on('click', () => {
+    //     $('#lv1').offDelegate();
+    // })
+    //
+    // window.dom = $;
 
 </script>
 <script src="http://qa.developer.163.com/system/bowlder/src/bowlder.js"></script>
