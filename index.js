@@ -42,15 +42,15 @@ var isArrayLike = function (o) {
 
 var getEventPath = function (e) {
 
-        var result = e.path || (e.composedPath && e.composedPath());
-        if (result && result.length !== 0) return result;
+    var result = e.path || (e.composedPath && e.composedPath());
+    if (result && result.length !== 0) return result;
 
-        result = new Dom(e.target).parents().nodes;
-        result.unshift(e.target);
-        result.push(window);
-        return result;
+    result = new Dom(e.target).parents().nodes;
+    result.unshift(e.target);
+    result.push(window);
+    return result;
 
-    };
+};
 
 var guid = 0;
 var getGUID = function (prefix = '') {
@@ -458,7 +458,11 @@ class Dom {
             if (!cache) return;
 
 
+            //{ type:[ listener ] }
+            // listener: function()
+            // listener.cache   { selector:fn }
             var type_listeners_map;
+
 
             //offDelegate(), 缺省type，在取消对该node的所有代理监听
             if (!type) {
@@ -489,15 +493,26 @@ class Dom {
             //offDelegate('click','div');
             type_listeners_map[type].forEach(listener => {
                 var cache = listener.cache;
-                if (!cache[selector]) return;
+                if (!cache[selector]) {
 
-                if (!fn) {
+                }
+                else if (!fn) {
                     cache[selector] = undefined;
-                    return;
+                }
+                else {
+                    var index = cache[selector].indexOf(fn);
+                    cache[selector].splice(index, 1);
                 }
 
-                var index = cache[selector].indexOf(fn);
-                cache[selector].splice(index, 1);
+                var isNoDelListener = Object.keys(cache).filter((selector) => {
+                    return cache[selector] && cache[selector].length > 0
+                }).length === 0;
+
+                if (isNoDelListener) {
+                    node.removeEventListener(type, listener);
+                    removeEventCache(node, type, listener);
+                }
+
             })
 
 
