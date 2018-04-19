@@ -338,7 +338,7 @@ class Dom {
 
     append(newNode) {
 
-        if (newNode.nodeType) {
+        if (newNode.nodeType) { // fragment#nodeType : 11
             return this.each(node => {
                 node.appendChild(newNode)
             });
@@ -637,7 +637,7 @@ $.fragment = function (html) {
     return fragment;
 }
 
-var isHtml = /</g;
+var isHtml = /</;
 $.create = function (html) {
     if (isHtml.test(html)) {
         tmpEle.innerHTML = html;
