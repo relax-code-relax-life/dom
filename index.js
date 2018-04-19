@@ -253,6 +253,29 @@ class Dom {
 
     }
 
+    attr(name, val) {
+        if (val) {
+            return this.each(node => node.setAttribute(name, val));
+        }
+        else if (typeof name === 'string') {
+            return this.map(node => node.getAttribute(name)).join(' ');
+        }
+        else if (typeof name === 'object') {
+            for (var key in name) {
+                this.each(node => node.setAttribute(key, name[key]));
+            }
+            return this;
+        }
+    }
+
+    removeAttr(...names) {
+        names = names.reduce((prev, cur) => Array.isArray(cur) ? prev.concat(cur) : (prev.push(cur) && prev), []);
+        names.forEach((name) => {
+            this.each(node => node.removeAttribute(name));
+        });
+        return this;
+    }
+
     html(html) {
         if (html === undefined) {
             return this[0].innerHTML;

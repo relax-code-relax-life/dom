@@ -9,7 +9,7 @@
 
 <div id="lv1">
     <button id="lv2_btn">lv2_btn</button>
-    <div id="lv2_div">lv2_div
+    <div id="lv2_div" other="123">lv2_div
         <button id="lv3_btn">lv3_btn</button>
     </div>
 </div>
@@ -36,6 +36,8 @@
 <script type="module">
 
     import $ from '../index.js';
+
+    window.dom = $;
 
     //
     // $('#lv1').onDelegate('click', '#lv2_div', function (e) {
