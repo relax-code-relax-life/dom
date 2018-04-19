@@ -603,7 +603,8 @@ function $(selector) {
 
 
 var tmpEle = document.createElement('div');
-var createFragment = function (html) {
+
+$.fragment = function (html) {
     tmpEle.innerHTML = html;
     var fragment = document.createDocumentFragment();
     var child;
@@ -613,8 +614,15 @@ var createFragment = function (html) {
     return fragment;
 }
 
+var isHtml = /</g;
 $.create = function (html) {
-    return new Dom(createFragment(html).children);
+    if (isHtml.test(html)) {
+        tmpEle.innerHTML = html;
+        return new Dom(tmpEle.children);
+    }
+    else {
+        return new Dom(document.createElement(html));
+    }
 }
 
 export default $;

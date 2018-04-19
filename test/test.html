@@ -35,7 +35,8 @@
 
 <script type="module">
 
-    // import $ from '../index.js';
+    import $ from '../index.js';
+
     //
     // $('#lv1').onDelegate('click', '#lv2_div', function (e) {
     //     console.log(e.target.id, e.currentTarget.id, this.id);
@@ -46,6 +47,9 @@
     // })
     //
     // window.dom = $;
+
+
+    $('body').append($.create('<div>child</div>')).append($.create('div').text('child2')).append($.create('<p>done</p>'))
 
 </script>
 <script src="http://qa.developer.163.com/system/bowlder/src/bowlder.js"></script>
