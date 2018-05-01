@@ -83,6 +83,16 @@ var eleClosest = call.bind(Element.prototype.closest ||
     });
 
 
+var checkNodeTypeApply = function (fn, node) {
+    if (node.nodeType) {  // fragment#nodeType : 11
+        fn(node)
+    }
+    else if (isArrayLike(node)) {
+        slice(node).forEach(fn);
+    }
+}
+
+
 class Dom {
     /**
      * @param nodes {Array:HTMLElement}
@@ -107,6 +117,10 @@ class Dom {
 
         this.length = nodes.length;
 
+        domMethodNames.forEach(name => {
+            if (name === 'constructor') return;
+            this[name] = this[name].bind(this);
+        })
     }
 
     each(fn) {
@@ -336,19 +350,47 @@ class Dom {
         return node.scrollHeight - node.clientHeight;
     }
 
+    _append(newNode) {
+        return this.each(node => {
+            node.appendChild(newNode);
+        })
+    }
+
     append(newNode) {
 
-        if (newNode.nodeType) { // fragment#nodeType : 11
-            return this.each(node => {
-                node.appendChild(newNode)
-            });
-        }
-        else if (isArrayLike(newNode)) {
-            slice(newNode).forEach(item => {
-                this.append(item);
-            })
-        }
+        checkNodeTypeApply(this._append, newNode);
 
+        return this;
+    }
+
+
+    _insertBefore(newNode) {
+        return this.each((node) => {
+            node.parentNode.insertBefore(newNode, node);
+        })
+    }
+
+    insertBefore(newNode) {
+
+        checkNodeTypeApply(this._insertBefore, newNode);
+        return this;
+    }
+
+    _insertAfter(newNode) {
+        return this.each(node => {
+            var next = node.nextElementSibling;
+            var parent = node.parentNode;
+            if (next) {
+                parent.insertBefore(newNode, next);
+            }
+            else {
+                parent.appendChild(newNode);
+            }
+        })
+    }
+
+    insertAfter(newNode) {
+        checkNodeTypeApply(this._insertAfter, newNode);
         return this;
     }
 
@@ -647,5 +689,8 @@ $.create = function (html) {
         return new Dom(document.createElement(html));
     }
 }
+
+
+const domMethodNames = Object.getOwnPropertyNames(Dom.prototype);
 
 export default $;
