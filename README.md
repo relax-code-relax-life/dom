@@ -57,6 +57,8 @@ function( html:string ) : DocumentFragment
 ### DOM# computeStyle(pseudoElt?)
 ### DOM# maxScroll(index = 0) 
 ### DOM# append(newNode)
+### DOM# insertAfter(newNode)
+### DOM# insertBefore(newNode)
 ### DOM# remove()
 ### DOM# offset(index = 0)
 ### DOM# on(type, fn)
