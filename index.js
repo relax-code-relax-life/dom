@@ -83,12 +83,16 @@ var eleClosest = call.bind(Element.prototype.closest ||
     });
 
 
-var checkNodeTypeApply = function (fn, node) {
+var validNodeParam = function (node) {
     if (node.nodeType) {  // fragment#nodeType : 11
-        fn(node)
+        return node.cloneNode(true);
     }
     else if (isArrayLike(node)) {
-        slice(node).forEach(fn);
+        var fragment = document.createDocumentFragment();
+        for (var i = 0; i < node.length; i++) {
+            fragment.appendChild(node[i]);
+        }
+        return fragment.cloneNode(true);
     }
 }
 
@@ -369,33 +373,50 @@ class Dom {
     }
 
 
-    _append(newNode) {
-        return this.each(node => {
-            node.appendChild(newNode);
-        })
-    }
-
     append(newNode) {
 
-        checkNodeTypeApply(this._append, newNode);
+        newNode = validNodeParam(newNode);
+        if (newNode) {
+            this.each(node => {
+                node.appendChild(newNode);
+            })
+        }
 
         return this;
     }
 
 
-    _insertBefore(newNode) {
-        return this.each((node) => {
-            node.parentNode.insertBefore(newNode, node);
-        })
+    prepend(newNode) {
+
+        newNode = validNodeParam(newNode);
+
+        if (newNode) {
+            this.each(node => {
+                node.insertBefore(newNode, node.firstChild);
+            })
+        }
+
+        return this;
+
     }
+
 
     insertBefore(newNode) {
 
-        checkNodeTypeApply(this._insertBefore, newNode);
+        newNode = validNodeParam(newNode);
+        if (newNode) {
+            this.each((node) => {
+                node.parentNode.insertBefore(newNode, node);
+            })
+        }
         return this;
     }
 
-    _insertAfter(newNode) {
+
+    insertAfter(newNode) {
+        newNode = validNodeParam(newNode);
+        if (!newNode) return this;
+
         return this.each(node => {
             var next = node.nextElementSibling;
             var parent = node.parentNode;
@@ -406,11 +427,6 @@ class Dom {
                 parent.appendChild(newNode);
             }
         })
-    }
-
-    insertAfter(newNode) {
-        checkNodeTypeApply(this._insertAfter, newNode);
-        return this;
     }
 
     remove() {
@@ -440,8 +456,8 @@ class Dom {
             var computeDisplay = $cur.computeStyle().display;
             if (computeDisplay !== 'none') return;
 
-            if(displayValue){
-                $cur.style('display',displayValue);
+            if (displayValue) {
+                $cur.style('display', displayValue);
                 return;
             }
 
@@ -453,14 +469,14 @@ class Dom {
                 if (inline === 'none') {
                     $cur.removeStyle('display');
 
-                    computeDisplay=$cur.computeStyle().display;
-                    if(computeDisplay!=='none') return;
+                    computeDisplay = $cur.computeStyle().display;
+                    if (computeDisplay !== 'none') return;
                 }
 
                 // 1. 去除行内 display:none 后，还是none
                 // 2. 不存在行内display，或者行内display不是none
 
-                $cur.style('display','block');
+                $cur.style('display', 'block');
 
             }
 
