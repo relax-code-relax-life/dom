@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <style>
-        #testStyle{
+        #testStyle {
             display: none;
         }
 
@@ -13,7 +13,7 @@
 </head>
 <body>
 
-<div id="testStyle" style="display: none"></div>
+<div id="testStyle" style="display: block"></div>
 
 <div id="lv1">
     <button id="lv2_btn">lv2_btn</button>
@@ -48,7 +48,7 @@
     window.dom = $;
 
     var html = '<div class="resize_point"></div>';
-    console.log($.create(html));
+    // console.log($.create(html));
     //
     // $('#lv1').onDelegate('click', '#lv2_div', function (e) {
     //     console.log(e.target.id, e.currentTarget.id, this.id);
@@ -60,11 +60,13 @@
     //
     // window.dom = $;
 
-
-    $('body').append($.create('<div>child</div>')).append($.create('div').text('child2')).append($.create('<p>done</p>'))
+    var child = $.create('<div>child</div>');
+    // console.log(child,$('div'));
+    // $('div').append(child, false);
 
 </script>
 <script src="http://qa.developer.163.com/system/bowlder/src/bowlder.js"></script>
+<script src="jquery-3.1.0.js"></script>
 <script>
 
     // var bowlder=window.bowlder;
@@ -72,6 +74,11 @@
     //     console.log(e.target.id, e.currentTarget.id,e);
     //
     // });
+
+    var child = $('<div>jquery</div>')
+    var $div = $('div');
+    debugger;
+    $div.append(child);
 
 </script>
 </body>

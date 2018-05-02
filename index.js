@@ -85,14 +85,15 @@ var eleClosest = call.bind(Element.prototype.closest ||
 
 var validNodeParam = function (node) {
     if (node.nodeType) {  // fragment#nodeType : 11
-        return node.cloneNode(true);
+        return node;
     }
     else if (isArrayLike(node)) {
         var fragment = document.createDocumentFragment();
         for (var i = 0; i < node.length; i++) {
             fragment.appendChild(node[i]);
         }
-        return fragment.cloneNode(true);
+
+        return fragment;
     }
 }
 
@@ -373,43 +374,44 @@ class Dom {
     }
 
 
+    //jquery中，实例内部的nodes中，最后一个node添加的是原newNode，其余的添加的都是clone的。
+    //保持jquery逻辑
     append(newNode) {
 
         newNode = validNodeParam(newNode);
-        if (newNode) {
-            this.each(node => {
-                node.appendChild(newNode);
-            })
-        }
+        if (!newNode) return this;
 
-        return this;
+        var lastIndex = this.length - 1;
+        return this.each((node, index) => {
+            node.appendChild(index === lastIndex ? newNode : newNode.cloneNode(true));
+        })
+
     }
 
 
     prepend(newNode) {
 
         newNode = validNodeParam(newNode);
+        if (!newNode) return this;
 
-        if (newNode) {
-            this.each(node => {
-                node.insertBefore(newNode, node.firstChild);
-            })
-        }
-
-        return this;
+        var lastIndex = this.length - 1;
+        return this.each((node, index) => {
+            node.insertBefore(index === lastIndex ? newNode : newNode.cloneNode(true), node.firstChild);
+        })
 
     }
 
 
     insertBefore(newNode) {
 
-        newNode = validNodeParam(newNode);
-        if (newNode) {
-            this.each((node) => {
-                node.parentNode.insertBefore(newNode, node);
-            })
-        }
-        return this;
+        newNode = validNodeParam(newNode, clone);
+        if (!newNode) return this;
+
+        var lastIndex = this.length - 1;
+        return this.each((node, index) => {
+            node.parentNode.insertBefore(index === lastIndex ? newNode : newNode.cloneNode(true), node);
+        })
+
     }
 
 
@@ -417,16 +419,20 @@ class Dom {
         newNode = validNodeParam(newNode);
         if (!newNode) return this;
 
-        return this.each(node => {
+        var lastIndex = this.length - 1;
+        return this.each((node, index) => {
             var next = node.nextElementSibling;
             var parent = node.parentNode;
+            var tar = index === lastIndex ? newNode : newNode.cloneNode(true);
+
             if (next) {
-                parent.insertBefore(newNode, next);
+                parent.insertBefore(tar, next);
             }
             else {
-                parent.appendChild(newNode);
+                parent.appendChild(tar);
             }
-        })
+        });
+
     }
 
     remove() {
