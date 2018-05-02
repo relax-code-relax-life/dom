@@ -92,6 +92,14 @@ var checkNodeTypeApply = function (fn, node) {
     }
 }
 
+var reg_upperCase = /[A-Z]/g;
+var kebabCase = function (name) {
+    return name.replace(reg_upperCase, function (match, pos) {
+        return (pos === 0 ? '' : '-') + match.toLowerCase()
+    });
+};
+
+var tmpEle = document.createElement('div');
 
 class Dom {
     /**
@@ -122,6 +130,7 @@ class Dom {
             this[name] = this[name].bind(this);
         })
     }
+
 
     each(fn) {
         this.nodes.forEach(fn);
@@ -283,7 +292,7 @@ class Dom {
     }
 
     removeAttr(...names) {
-        names = names.reduce((prev, cur) => Array.isArray(cur) ? prev.concat(cur) : (prev.push(cur) && prev), []);
+        // names = names.reduce((prev, cur) => Array.isArray(cur) ? prev.concat(cur) : (prev.push(cur) && prev), []);
         names.forEach((name) => {
             this.each(node => node.removeAttribute(name));
         });
@@ -337,6 +346,15 @@ class Dom {
         return this;
     }
 
+    removeStyle(...names) {
+        if (names.length === 0) return this.removeAttr('style');
+        else return this.each(node => {
+            names.forEach(name => {
+                node.style.removeProperty(name);
+            })
+        })
+    }
+
     /**
      * @param [pseudoElt]
      * @returns {CSSStyleDeclaration}
@@ -349,6 +367,7 @@ class Dom {
         var node = this[index];
         return node.scrollHeight - node.clientHeight;
     }
+
 
     _append(newNode) {
         return this.each(node => {
@@ -400,6 +419,54 @@ class Dom {
         });
     }
 
+    hide() {
+        return this.each((node, index) => {
+
+            var $cur = this.eq(index);
+            var oldDisplay = $cur.computeStyle().display;
+
+            if (oldDisplay !== 'none') {
+
+                $cur.dataset('_pre_display', oldDisplay);
+                $cur.style('display', 'none')
+            }
+
+        })
+    }
+
+    show(displayValue) {
+        return this.each((node, index) => {
+            var $cur = this.eq(index);
+            var computeDisplay = $cur.computeStyle().display;
+            if (computeDisplay !== 'none') return;
+
+            if(displayValue){
+                $cur.style('display',displayValue);
+                return;
+            }
+
+            var preDisplay = $cur.dataset('_pre_display');
+            if (preDisplay) $cur.style('display', preDisplay);
+            else {
+                //没有缓存原本的display，需要推算
+                var inline = $cur.style('display');
+                if (inline === 'none') {
+                    $cur.removeStyle('display');
+
+                    computeDisplay=$cur.computeStyle().display;
+                    if(computeDisplay!=='none') return;
+                }
+
+                // 1. 去除行内 display:none 后，还是none
+                // 2. 不存在行内display，或者行内display不是none
+
+                $cur.style('display','block');
+
+            }
+
+
+        })
+    }
 
     offset(index = 0) {
         var box = this[index].getBoundingClientRect();
@@ -586,6 +653,39 @@ class Dom {
 }
 
 
+Dom.prototype.dataset = (function () {
+
+    if (tmpEle.dataset) {
+        return function (name, val) {
+            if (val) return this.each(node => node.dataset[name] = val);
+            else if (typeof name === 'string') {
+                return this.map(node => node.dataset[name]).join('')
+            }
+            else if (typeof name === 'object') {
+                for (var key in name) {
+                    this.each(node => node.dataset[key] = name[key])
+                }
+            }
+            return this;
+        }
+    }
+    else {
+        return function (name, val) {
+            var convertName;
+            if (typeof name === 'string') convertName = 'data-' + kebabCase(name);
+            else if (typeof name === 'object') {
+                convertName = {};
+                for (var key in name) {
+                    convertName['data-' + kebabCase(key)] = name[key];
+                }
+            }
+            return this.attr(convertName, val);
+        }
+    }
+
+})();
+
+
 //region event help
 
 // id--> { type--> fns }
@@ -666,8 +766,6 @@ function $(selector) {
     }
 }
 
-
-var tmpEle = document.createElement('div');
 
 $.fragment = function (html) {
     tmpEle.innerHTML = html;
