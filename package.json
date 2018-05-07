@@ -1,6 +1,6 @@
 {
   "name": "wwl-dom",
-  "version": "1.0.19",
+  "version": "1.0.20",
   "description": "naive dom utils.",
   "main": "index.js",
   "scripts": {

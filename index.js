@@ -109,6 +109,12 @@ var kebabCase = function (name) {
 };
 
 
+function sibling(cur, dir) {
+    while ((cur = cur[dir]) && cur.nodeType !== 1) {
+    }
+    return cur;
+}
+
 var tmpEle = document.createElement('div');
 
 class Dom {
@@ -251,6 +257,13 @@ class Dom {
         );
     }
 
+    next() {
+        return new Dom(this.map(node => sibling(node, 'nextSibling')));
+    }
+
+    prev() {
+        return new Dom(this.map(node => sibling(node, 'previousSibling')));
+    }
 
     find(selector) {
         return new Dom(

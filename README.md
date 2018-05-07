@@ -62,6 +62,8 @@ $('#container').append( $.fragment('outer<span>inner</span>') );//<div id="conta
 ### DOM# parent()
 ### DOM# parents()
 ### DOM# children()
+### DOM# prev()
+### DOM# next()
 ### DOM# find(selector)
 ### DOM# includes(node)
 ### DOM# closest(selector)
