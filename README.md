@@ -83,6 +83,7 @@ $('#container').append( $.fragment('outer<span>inner</span>') );//<div id="conta
 ### DOM# remove()
 ### DOM# hide()
 ### DOM# show(displayValue?)
+### DOM# clone(deep?)
 ### DOM# offset(index = 0)
 ### DOM# on(type, fn)
 ### DOM# off(type, fn?)

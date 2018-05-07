@@ -505,6 +505,13 @@ class Dom {
         })
     }
 
+    clone(deep) {
+        var nodes = this.map(node => {
+            return node.cloneNode(deep);
+        });
+        return new Dom(nodes);
+    }
+
     offset(index = 0) {
         var box = this[index].getBoundingClientRect();
         return {
