@@ -465,7 +465,7 @@ class Dom {
 
     remove() {
         return this.each(node => {
-            node.parentNode.removeChild(node);
+            node.parentNode && node.parentNode.removeChild(node);
         });
     }
 
