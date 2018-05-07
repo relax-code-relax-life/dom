@@ -20,9 +20,24 @@ selector参数可以是选择器或者html元素节点，返回一个DOM对象�
 
 ## $.create( html )
 
-function( html:string ) : DocumentFragment 
+function( html:string ) : DOM
 
 传入html字符，返回一个DOM对象
+
+## $.fragment(html)
+
+function( html:string ) : DocumentFragment
+
+返回一个文档片段。
+试用场景:
+```javascript
+//<div id="container"></div>
+
+$('#container').append( $.create('outer<span>inner</span>') );  //<div id="container"><span>inner</span></div>
+$('#container').append( $.fragment('outer<span>inner</span>') );//<div id="container">outer<span>inner</span></div>
+
+```
+
 
 ## DOM对象API
 
@@ -64,6 +79,7 @@ function( html:string ) : DocumentFragment
 ### DOM# prepend(newNode)
 ### DOM# insertAfter(newNode)
 ### DOM# insertBefore(newNode)
+### DOM# replace(newNode)
 ### DOM# remove()
 ### DOM# hide()
 ### DOM# show(displayValue?)
@@ -72,6 +88,7 @@ function( html:string ) : DocumentFragment
 ### DOM# off(type, fn?)
 ### DOM# onDelegate(type, selector, fn)
 ### DOM# offDelegate(type, selector?, fn?)
+### DOM# trigger(type,data?)
 ### DOM# offsetHeight(index=0)
 ### DOM# offsetWidth(index=0)
 ### DOM# offsetTop(index=0)

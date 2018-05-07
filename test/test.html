@@ -8,6 +8,15 @@
             display: none;
         }
 
+        #event {
+            width: 50px;
+            height: 50px;
+            overflow: auto;
+        }
+
+        #event_inner {
+            height: 100px;
+        }
 
     </style>
 </head>
@@ -22,6 +31,12 @@
     </div>
 </div>
 
+<div id="create1"></div>
+<div id="create2"></div>
+
+<div id="event">
+    <div id="event_inner"></div>
+</div>
 <script>
 
     var handler = function (e) {
@@ -38,6 +53,28 @@
     // document.querySelector('#lv2_btn').addEventListener('click', handler);
     // document.querySelector('#lv2_div').addEventListener('click', handler);
     // document.querySelector('#lv3_btn').addEventListener('click', handler);
+
+</script>
+
+
+<script src="http://qa.developer.163.com/system/bowlder/src/bowlder.js"></script>
+<script src="jquery-3.1.0.js"></script>
+<script>
+
+    // var bowlder=window.bowlder;
+    // bowlder('#lv1').on('click','#lv2_div', function (e) {
+    //     console.log(e.target.id, e.currentTarget.id,e);
+    //
+    // });
+
+    // var child = $('<div>jquery</div>')
+    // var $div = $('div');
+    // $div.append(child);
+
+    $('#event').on('scroll', function () {
+        console.log('scroll jquery');
+    })
+    console.log($('#event').trigger('scroll'));
 
 </script>
 
@@ -61,25 +98,21 @@
     // window.dom = $;
 
     var child = $.create('<div>child</div>');
+
+    // $('#lv3_btn').replace($.create('<span>replace</span>'))
+
     // console.log(child,$('div'));
     // $('div').append(child, false);
 
+    $('#create1').append($.create('outer<span>inner</span>'));
+    $('#create2').append($.fragment('outer<span>inner</span>'));
+
+    $('#event').on('scroll', function (e) {
+        console.log('scroll wwl', e.constructor.name,e);
+    }).on('click', function (e) {
+        console.log(e.constructor.name);
+    }).trigger('scroll');
 </script>
-<script src="http://qa.developer.163.com/system/bowlder/src/bowlder.js"></script>
-<script src="jquery-3.1.0.js"></script>
-<script>
 
-    // var bowlder=window.bowlder;
-    // bowlder('#lv1').on('click','#lv2_div', function (e) {
-    //     console.log(e.target.id, e.currentTarget.id,e);
-    //
-    // });
-
-    var child = $('<div>jquery</div>')
-    var $div = $('div');
-    debugger;
-    $div.append(child);
-
-</script>
 </body>
 </html>

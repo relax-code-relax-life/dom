@@ -4,6 +4,10 @@ var slice = call.bind(Array.prototype.slice);
 var docEle = document.documentElement;
 var win = window;
 
+var isFunction = function (tar) {
+    return typeof tar === 'function';
+}
+
 //fn返回布尔true，则跳出循环。
 var mapObj = function (obj, fn) {
     var result = {};
@@ -103,6 +107,7 @@ var kebabCase = function (name) {
         return (pos === 0 ? '' : '-') + match.toLowerCase()
     });
 };
+
 
 var tmpEle = document.createElement('div');
 
@@ -404,7 +409,7 @@ class Dom {
 
     insertBefore(newNode) {
 
-        newNode = validNodeParam(newNode, clone);
+        newNode = validNodeParam(newNode);
         if (!newNode) return this;
 
         var lastIndex = this.length - 1;
@@ -433,6 +438,16 @@ class Dom {
             }
         });
 
+    }
+
+    replace(newNode) {
+        newNode = validNodeParam(newNode);
+        if (!newNode) return this;
+
+        var lastIndex = this.length - 1;
+        return this.each((node, index) => {
+            node.parentNode.replaceChild(index === lastIndex ? newNode : newNode.cloneNode(true), node);
+        })
     }
 
     remove() {
@@ -496,6 +511,12 @@ class Dom {
             left: box.left + (win.pageXOffset || docEle.scrollLeft || document.body.scrollLeft) - docEle.clientLeft,
             top: box.top + (win.pageYOffset || docEle.scrollTop || document.body.scrollTop) - docEle.clientTop
         }
+    }
+
+    trigger(type, eventInit) {
+        return this.each(node => {
+            triggerNode(node, type, eventInit);
+        })
     }
 
     on(type, fn) {
@@ -765,6 +786,78 @@ const removeEventCache = function (node, type, fn) {
 };
 
 
+const getBaseEvent = function (name, eventInit) {
+    if (isFunction(Event)) {
+        return new Event(name, eventInit);
+    }
+    else {
+        var ev = document.createEvent("MouseEvents");
+        ev.initEvent(name, true, true);//事件类型,是否冒泡,是否可以取消事件
+        if (eventInit)
+            Object.assign(ev, eventInit);
+        return ev;
+
+    }
+}
+const getSpecialEvent = function (constructor, name, eventInit) {
+    return isFunction(constructor) ? new constructor(name, eventInit) : getBaseEvent(name, eventInit);
+}
+const getMouseEvent = getSpecialEvent.bind(this, MouseEvent);
+const getKeyEvent = getSpecialEvent.bind(this, KeyboardEvent);
+const getFocusEvent = getSpecialEvent(this, FocusEvent);
+const getWheelEvent = getSpecialEvent(this, WheelEvent);
+
+
+var eventFactoryMap = [
+    [/^key.*/, getKeyEvent],
+    [/^(.*click|mouse.*|drop)/, getMouseEvent],
+    [/^(focus.*|blur)/, getFocusEvent],
+    [/^wheel/, getWheelEvent]
+]
+const getEvent = function (name, eventInit) {
+    var factoryMap = eventFactoryMap.find(entry => entry[0].test(name));
+    return factoryMap ? factoryMap[1](name, eventInit) : getBaseEvent(name, eventInit);
+}
+
+var triggerSpecial = {
+    focus: {
+        check(node) {
+            return node.focus
+        },
+        trigger(node) {
+            node.focus();
+        }
+    },
+    blur: {
+        check(node) {
+            return node.blur
+        },
+        trigger(node) {
+            node.blur();
+        }
+    },
+    click: {
+        check(node) {
+            return node.click
+        },
+        trigger(node) {
+            node.click();
+        }
+    }
+}
+
+var triggerNode = function (node, name, eventInit) {
+    name = name.trim();
+    if (triggerSpecial[name] && triggerSpecial[name].check(node)) {
+        triggerSpecial[name].trigger(node);
+        return;
+    }
+
+    var event = getEvent(name, eventInit);
+    node.dispatchEvent(event);
+};
+
+
 //endregion
 
 
@@ -776,6 +869,7 @@ const removeEventCache = function (node, type, fn) {
         };
     });
 })
+
 
 // $.eventCacheMap = eventCacheMap;
 
