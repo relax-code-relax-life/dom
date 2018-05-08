@@ -132,7 +132,9 @@ class Dom {
             nodes = [nodes];
         }
         else if (!Array.isArray(nodes)) {
-            nodes = Array.from(nodes);
+            nodes = Array.from(nodes).filter(node => {
+                return node === window || (node && node.nodeType);
+            })
         }
 
         this.nodes = nodes;
@@ -258,11 +260,15 @@ class Dom {
     }
 
     next() {
-        return new Dom(this.map(node => sibling(node, 'nextSibling')));
+        return new Dom(
+            this.map(node => sibling(node, 'nextSibling'))
+        );
     }
 
     prev() {
-        return new Dom(this.map(node => sibling(node, 'previousSibling')));
+        return new Dom(
+            this.map(node => sibling(node, 'previousSibling'))
+        );
     }
 
     find(selector) {
