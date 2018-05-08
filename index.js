@@ -131,8 +131,11 @@ class Dom {
         else if (nodes.nodeType) {
             nodes = [nodes];
         }
-        else if (!Array.isArray(nodes)) {
-            nodes = Array.from(nodes).filter(node => {
+        else {
+            if (!Array.isArray(nodes)) {
+                nodes = Array.from(nodes);
+            }
+            nodes = nodes.filter(node => {
                 return node === window || (node && node.nodeType);
             })
         }
