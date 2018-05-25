@@ -807,6 +807,7 @@ const removeEventCache = function (node, type, fn) {
     if (!cache[type]) return;
     if (!fn) {
         cache[type] = undefined;
+        return;
     }
 
     //removeEventCache(node,type,fn)
