@@ -932,6 +932,8 @@ $.fragment = function (html) {
     return fragment;
 }
 
+//使用children,所以只会取到element，不能取到所有node
+//eg: $.create('<div>child</div>child2<div>child</div>').length; //2
 var isHtml = /</;
 $.create = function (html) {
     if (isHtml.test(html)) {

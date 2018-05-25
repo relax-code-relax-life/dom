@@ -18,18 +18,25 @@ selector参数可以是选择器或者html元素节点，返回一个DOM对象�
 
 如果参数是选择器,函数内部通过`document.querySelectorAll`进行查找。
 
-## $.create( html )
+## $.create( htmlOrTag )
 
-function( html:string ) : DOM
+function( htmlOrTag:string ) : DOM
 
-传入html字符，返回一个DOM对象
+传入html字符或者标签名称，返回一个DOM对象
+
+```javascript
+
+$.create('<div>test</div>').outerHtml();    //<div>test</div>
+$.create('div').text('test');               //<div>test</div>
+
+```
 
 ## $.fragment(html)
 
 function( html:string ) : DocumentFragment
 
 返回一个文档片段。
-试用场景:
+使用场景:
 ```javascript
 //<div id="container"></div>
 
@@ -37,6 +44,16 @@ $('#container').append( $.create('outer<span>inner</span>') );  //<div id="conta
 $('#container').append( $.fragment('outer<span>inner</span>') );//<div id="container">outer<span>inner</span></div>
 
 ```
+
+## note
+
+```javascript
+$.create('<div>txt1</div>text2').outerHtml();      //<div>txt1</div>
+$.create('<div>text1</div><span>text2</span>').outerHtml(); //<div>text1</div><span>text2</span>
+$.create('div').append($.fragment('<div>txt1</div>text2')).outerHtml(); //<div><div>txt1</div>text2</div>
+```
+
+`create`方法中，最外层的文本必须要有标签包裹。
 
 
 ## DOM对象API
