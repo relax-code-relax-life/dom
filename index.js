@@ -333,10 +333,19 @@ class Dom {
 
     html(html) {
         if (html === undefined) {
-            return this[0].innerHTML;
+            return this.map(node => node.innerHTML).join('');
         }
         else {
             return this.each(node => node.innerHTML = html);
+        }
+    }
+
+    outerHtml(html) {
+        if (html === undefined) {
+            return this.map(node => node.outerHTML).join('');
+        }
+        else {
+            return this.each(node => node.outerHTML = html);
         }
     }
 

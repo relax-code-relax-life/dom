@@ -72,6 +72,8 @@ $('#container').append( $.fragment('outer<span>inner</span>') );//<div id="conta
 ### DOM# removeAttr(...names)
 ### DOM# val(val?)
 ### DOM# html(html?)
+### DOM# outerHtml(html?)
+如果传入html，则会替换掉原节点，同时返回的是原节点。如果需要替换后的新节点，需要重新获取。
 ### DOM# text(txt?)
 ### DOM# style(name:string|object, val?)
 ### DOM# removeStyle(...names)
