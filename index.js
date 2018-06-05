@@ -184,18 +184,25 @@ class Dom {
     }
 
     addClass(...names) {
+        names = names.map(name => name.trim()).filter(name => name);
+        if (names.length === 0) return this;
         return this.each((node, index) => {
             node.classList.add(...names);
         })
     }
 
     removeClass(...names) {
+        names = names.map(name => name.trim()).filter(name => name);
+        if (names.length === 0) return this;
+
         return this.each((node, index) => {
             node.classList.remove(...names);
         })
     }
 
     toggleClass(...names) {
+        names = names.map(name => name.trim()).filter(name => name);
+        if (names.length === 0) return this;
 
         var isSupport = this.nodes[0].classList.toggle;
         if (isSupport) {
