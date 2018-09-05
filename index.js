@@ -91,6 +91,9 @@ var validNodeParam = function (node) {
     if (node.nodeType) {  // fragment#nodeType : 11
         return node;
     }
+    else if (typeof node === 'string') {
+        return $.fragment(node);
+    }
     else if (isArrayLike(node)) {
         var fragment = document.createDocumentFragment();
         for (var i = 0; i < node.length; i++) {
@@ -179,6 +182,7 @@ class Dom {
         return this.eq(this.length - 1);
     }
 
+    //region class
     classNames(index = 0) {
         return slice(this.nodes[index].classList);
     }
@@ -242,6 +246,9 @@ class Dom {
         return this.nodes.some((node) => node.classList.contains(name))
     }
 
+    //endregion
+
+    //region walk dom
 
     parent() {
         return new Dom(this.map((node) => node.parentNode));
@@ -293,20 +300,26 @@ class Dom {
         );
     }
 
-    includes(node) {
-        return this.nodes.includes(node);
-    }
-
     closest(selector) {
         return new Dom(
             this.nodes.map(node => eleClosest(node, selector))
         );
     }
 
+    //endregion
+
+    //region assert
+    includes(node) {
+        return this.nodes.includes(node);
+    }
+
     match(selector) {
         return this.nodes.some(node => eleMatches(node, selector));
     }
 
+    //endregion
+
+    //region manipulate
     val(val) {
         if (val === undefined) {
             return this.map((node) => node.value || '').join('');
@@ -363,57 +376,6 @@ class Dom {
         else {
             return this.each(node => node.innerText = txt);
         }
-    }
-
-    //name: 和style.cssProperty形式一致，使用驼峰形式
-    style(name, val) {
-
-        var vals = {};
-
-        if (typeof name === 'string') {
-            if (val === undefined) {
-                // return this[0].style.getPropertyValue(name);
-                return this[0].style[name];
-            }
-            else vals[name] = val;
-        }
-
-        else if (typeof name === 'object') {
-            vals = name;
-        }
-        else return this;
-
-        for (var key in vals) {
-            this.each(function (node) {
-                // console.log('style add', key, vals[key])
-                // node.style.setProperty(key, vals[name]);
-                node.style[key] = vals[key];
-            })
-        }
-
-        return this;
-    }
-
-    removeStyle(...names) {
-        if (names.length === 0) return this.removeAttr('style');
-        else return this.each(node => {
-            names.forEach(name => {
-                node.style.removeProperty(name);
-            })
-        })
-    }
-
-    /**
-     * @param [pseudoElt]
-     * @returns {CSSStyleDeclaration}
-     */
-    computeStyle(pseudoElt) {
-        return window.getComputedStyle(this.nodes[0], pseudoElt);
-    }
-
-    maxScroll(index = 0) {
-        var node = this[index];
-        return node.scrollHeight - node.clientHeight;
     }
 
 
@@ -494,6 +456,60 @@ class Dom {
         });
     }
 
+    //endregion
+
+    //region style
+    //name: 和style.cssProperty形式一致，使用驼峰形式
+    style(name, val) {
+
+        var vals = {};
+
+        if (typeof name === 'string') {
+            if (val === undefined) {
+                // return this[0].style.getPropertyValue(name);
+                return this[0].style[name];
+            }
+            else vals[name] = val;
+        }
+
+        else if (typeof name === 'object') {
+            vals = name;
+        }
+        else return this;
+
+        for (var key in vals) {
+            this.each(function (node) {
+                // console.log('style add', key, vals[key])
+                // node.style.setProperty(key, vals[name]);
+                node.style[key] = vals[key];
+            })
+        }
+
+        return this;
+    }
+
+    removeStyle(...names) {
+        if (names.length === 0) return this.removeAttr('style');
+        else return this.each(node => {
+            names.forEach(name => {
+                node.style.removeProperty(name);
+            })
+        })
+    }
+
+    /**
+     * @param [pseudoElt]
+     * @returns {CSSStyleDeclaration}
+     */
+    computeStyle(pseudoElt) {
+        return window.getComputedStyle(this.nodes[0], pseudoElt);
+    }
+
+    maxScroll(index = 0) {
+        var node = this[index];
+        return node.scrollHeight - node.clientHeight;
+    }
+
     hide() {
         return this.each((node, index) => {
 
@@ -510,6 +526,11 @@ class Dom {
     }
 
     show(displayValue) {
+        // 更改元素的display，按一下优先级:
+        // 1. 使用displayValue参数
+        // 2. 使用元素属性 data-_pre_display
+        // _3. 如果元素存在行内display:none，则去除行内display
+        // 3. 如果元素应用的display样式为none，则设置行内display:block，否则直接返回。
         return this.each((node, index) => {
             var $cur = this.eq(index);
             var computeDisplay = $cur.computeStyle().display;
@@ -527,13 +548,14 @@ class Dom {
                 var inline = $cur.style('display');
                 if (inline === 'none') {
                     $cur.removeStyle('display');
-
-                    computeDisplay = $cur.computeStyle().display;
-                    if (computeDisplay !== 'none') return;
                 }
 
-                // 1. 去除行内 display:none 后，还是none
-                // 2. 不存在行内display，或者行内display不是none
+                // 考虑情况
+                // 1. 存在行内display:none，但去除后还是none
+                // 2. 存在行内display不是none，或者不存在行内display, 但元素应用的最高优先级样式为display:none
+
+                computeDisplay = $cur.computeStyle().display;
+                if (computeDisplay !== 'none') return;
 
                 $cur.style('display', 'block');
 
@@ -542,6 +564,8 @@ class Dom {
 
         })
     }
+
+    //endregion
 
     clone(deep) {
         var nodes = this.map(node => {

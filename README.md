@@ -86,6 +86,7 @@ $.create('div').append($.fragment('<div>txt1</div>text2')).outerHtml(); //<div><
 ### DOM# closest(selector)
 ### DOM# match(selector)
 ### DOM# attr(name,val?)
+### DOM# dataset(name,val?)
 ### DOM# removeAttr(...names)
 ### DOM# val(val?)
 ### DOM# html(html?)
