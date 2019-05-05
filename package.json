@@ -1,6 +1,6 @@
 {
-  "name": "wwl-dom",
-  "version": "1.0.28",
+  "name": "relax-dom",
+  "version": "1.0.30",
   "description": "naive dom utils.",
   "main": "index.js",
   "scripts": {

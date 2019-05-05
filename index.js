@@ -582,6 +582,20 @@ class Dom {
         }
     }
 
+    offsetRoot(root, index = 0) {
+        if (!root || !root.nodeType) return this.offset(index);
+        var node = this[index]
+        if (!root.contains(node)) return 0;
+
+        var box = node.getBoundingClientRect();
+        var rootBox = root.getBoundingClientRect();
+
+        return {
+            left: box.left - rootBox.left - root.clientLeft,
+            top: box.top - rootBox.top - root.clientTop
+        }
+    }
+
     trigger(type, eventInit) {
         return this.each(node => {
             triggerNode(node, type, eventInit);

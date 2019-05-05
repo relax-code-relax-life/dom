@@ -107,6 +107,7 @@ $.create('div').append($.fragment('<div>txt1</div>text2')).outerHtml(); //<div><
 ### DOM# show(displayValue?)
 ### DOM# clone(deep?)
 ### DOM# offset(index = 0)
+### DOM# offsetRoot(rootNode, index=0)
 ### DOM# on(type, fn)
 ### DOM# off(type, fn?)
 ### DOM# onDelegate(type, selector, fn)
