@@ -27,7 +27,7 @@ var minifyResult = UglifyJS.minify(code, {
         bare_returns:true
     }
 });
-code = minifyResult.code;
+code = '/*http://wangwl.net*/\r\n'+minifyResult.code;
 
 // console.log(minifyResult.code);
 

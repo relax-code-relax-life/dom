@@ -591,8 +591,8 @@ class Dom {
         var rootBox = root.getBoundingClientRect();
 
         return {
-            left: box.left - rootBox.left - root.clientLeft,
-            top: box.top - rootBox.top - root.clientTop
+            left: box.left - rootBox.left - root.clientLeft + root.scrollLeft,
+            top: box.top - rootBox.top - root.clientTop + root.scrollTop
         }
     }
 
