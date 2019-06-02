@@ -672,10 +672,10 @@ class Dom {
                         );
                     }
 
-                    var startIndex = pathNodes.length;
+                    var pathNodesIndexCeil = pathNodes.length;
                     queryNodesList.forEach(({queryNodes, fns}) => {
 
-                        for (var i = startIndex; i > -1; i--) {
+                        for (var i = 0; i < pathNodesIndexCeil; i++) {
                             let cur = pathNodes[i];
                             if (queryNodes.includes(cur)) {
 
