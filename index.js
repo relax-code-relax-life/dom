@@ -507,7 +507,7 @@ class Dom {
 
     isHidden(){
         return this.nodes.every((node, index) =>{
-            var style = this.eq(index);
+            var style = this.eq(index).computeStyle();
             return style.display === 'none' || style.visibility==='hidden';
         })
     }
