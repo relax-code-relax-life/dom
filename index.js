@@ -529,8 +529,9 @@ class Dom {
         // 更改元素的display，按一下优先级:
         // 1. 使用displayValue参数
         // 2. 使用元素属性 data-_pre_display
-        // _3. 如果元素存在行内display:none，则去除行内display
+        // 3. 如果元素存在行内display:none，则去除行内display
         // 3. 如果元素应用的display样式为none，则设置行内display:block，否则直接返回。
+        // 简单来说就是 使用传入displayValue>使用data-_pre_display> 去除inline:display:block或设置display:block
         return this.each((node, index) => {
             var $cur = this.eq(index);
             var computeDisplay = $cur.computeStyle().display;
@@ -563,6 +564,13 @@ class Dom {
 
 
         })
+    }
+
+    toggle(displayValue) {
+        return this.each((node, index) => {
+            var $cur = this.eq(index);
+            $cur.computeStyle().display === 'none' ? $cur.show(displayValue) : $cur.hide()
+        });
     }
 
     //endregion
