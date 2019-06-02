@@ -505,6 +505,16 @@ class Dom {
         return window.getComputedStyle(this.nodes[0], pseudoElt);
     }
 
+    isHidden(){
+        return this.nodes.every((node, index) =>{
+            var style = this.eq(index);
+            return style.display === 'none' || style.visibility==='hidden';
+        })
+    }
+    isVisible(){
+        return !this.isHidden();
+    }
+
     maxScroll(index = 0) {
         var node = this[index];
         return node.scrollHeight - node.clientHeight;
