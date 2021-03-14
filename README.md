@@ -2,11 +2,11 @@
 简陋的dom操作的封装。不考虑IE9以下及个别少数的兼容情况。
 
 # 下载
-* npm install --save wwl-dom
+* npm install --save relax-dom
 
 # 使用
-* import $ from "wwl-dom"
-* var $ = require('wwl-dom')
+* import $ from "relax-dom"
+* const $ = require('relax-dom')
 
 # API
 
