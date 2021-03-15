@@ -641,7 +641,7 @@ class Dom {
         }
     }
 
-    trigger(type: string, eventInit: EventInit): this {
+    trigger(type: string, eventInit?: EventInit): this {
         return this.each(node => {
             triggerNode(node, type, eventInit);
         })
@@ -925,7 +925,7 @@ const removeEventCache = function (node, type, fn) {
 };
 
 
-const getBaseEvent = function (name, eventInit) {
+const getBaseEvent = function (name, eventInit?) {
     if (isFunction(Event)) {
         return new Event(name, eventInit);
     } else {
@@ -937,7 +937,7 @@ const getBaseEvent = function (name, eventInit) {
 
     }
 }
-const getSpecialEvent = function (constructor, name, eventInit) {
+const getSpecialEvent = function (constructor, name, eventInit?) {
     return isFunction(constructor) ? new constructor(name, eventInit) : getBaseEvent(name, eventInit);
 }
 const getMouseEvent = getSpecialEvent.bind(this, MouseEvent);
@@ -952,7 +952,7 @@ var eventFactoryMap = [
     [/^(focus.*|blur)/, getFocusEvent],
     [/^wheel/, getWheelEvent]
 ]
-const getEvent = function (name, eventInit) {
+const getEvent = function (name, eventInit?) {
     var factoryMap = eventFactoryMap.find(entry => entry[0].test(name));
     return factoryMap ? factoryMap[1](name, eventInit) : getBaseEvent(name, eventInit);
 }
