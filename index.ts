@@ -150,7 +150,7 @@ class Dom {
             nodes = [n];
         } else {
             if (!Array.isArray(n)) {
-                nodes = Array.from(n as any);
+                n = Array.from(n as any);
             }
             nodes = (n as any[]).filter(node => {
                 return node === window || (node && node.nodeType);
