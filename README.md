@@ -1,15 +1,14 @@
-# desc
-简陋的dom操作的封装。不考虑IE9以下及个别少数的兼容情况。
+Lighter Dom manipulation library.
 
-# 下载
+# Install
 * npm install --save relax-dom
 
-# 使用
+# Import
 * import $ from "relax-dom"
 * const $ = require('relax-dom')
 
-# 支持ts
-从1.0.37开始，支持typescript。
+# Typescript
+Typescript has been supported from v3.0.37.
 ```typescript
 import $, {Dom} from 'relax-dom';
 let $input : Dom;
@@ -20,17 +19,18 @@ $input = $('input');
 
 ## $( selector )
 
-function ( selector: string|node ) : DOM
+function ( selector: string|HTMLElement ) : DOM
 
-selector参数可以是选择器或者html元素节点，返回一个DOM对象。
-
-如果参数是选择器,函数内部通过`document.querySelectorAll`进行查找。
+If the type of `selector` parameter is string, the function will query by `document.querySelectorAll`.
 
 ## $.create( htmlOrTag )
 
 function( htmlOrTag:string ) : DOM
 
-传入html字符或者标签名称，返回一个DOM对象
+Create a DOM object from html or tagName.
+
+If the parameter includes `<` character, it will be considered as html string. 
+Otherwise, the parameter is considered as a tag name.
 
 ```javascript
 
@@ -43,8 +43,7 @@ $.create('div').text('test');               //<div>test</div>
 
 function( html:string ) : DocumentFragment
 
-返回一个文档片段。
-使用场景:
+Usage scenarios: 
 ```javascript
 //<div id="container"></div>
 
@@ -61,10 +60,10 @@ $.create('<div>text1</div><span>text2</span>').outerHtml(); //<div>text1</div><s
 $.create('div').append($.fragment('<div>txt1</div>text2')).outerHtml(); //<div><div>txt1</div>text2</div>
 ```
 
-`create`方法中，最外层的文本必须要有标签包裹。
+In `create` method，text must be wrapped.
 
 
-## DOM对象API
+## DOM API
 
 ### DOM# each( fn )
 
@@ -99,7 +98,7 @@ $.create('div').append($.fragment('<div>txt1</div>text2')).outerHtml(); //<div><
 ### DOM# removeAttr(...names)
 ### DOM# val(val?)
 ### DOM# html(html?)
-### DOM# outerHtml(html?)
+### DOM# outerHtml(html?):this
 如果传入html，则会替换掉原节点，同时返回的是原节点。如果需要替换后的新节点，需要重新获取。
 ### DOM# text(txt?)
 ### DOM# style(name:string, val?)
