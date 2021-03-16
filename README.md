@@ -1,4 +1,4 @@
-Lighter DOM manipulation library. The production file size is 13K.
+Lightweight DOM manipulation library.
 
 # Install
 * npm install --save relax-dom
