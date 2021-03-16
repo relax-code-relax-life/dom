@@ -1048,3 +1048,7 @@ $.create = function (html) {
 const domMethodNames = Object.getOwnPropertyNames(Dom.prototype);
 
 export default $;
+
+export {
+    Dom
+}

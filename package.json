@@ -1,6 +1,6 @@
 {
   "name": "relax-dom",
-  "version": "1.0.36",
+  "version": "1.0.37",
   "description": "naive dom utils.",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

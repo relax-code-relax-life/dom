@@ -8,6 +8,14 @@
 * import $ from "relax-dom"
 * const $ = require('relax-dom')
 
+# 支持ts
+从1.0.37开始，支持typescript。
+```typescript
+import $, {Dom} from 'relax-dom';
+let $input : Dom;
+$input = $('input');
+```
+
 # API
 
 ## $( selector )

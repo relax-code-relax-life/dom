@@ -86,7 +86,7 @@ declare class Dom {
         left: number;
         top: number;
     } | undefined;
-    trigger(type: string, eventInit: EventInit): this;
+    trigger(type: string, eventInit?: EventInit): this;
     on(type: string, fn: eventListener): this;
     off(type: string, fn: eventListener): this;
     onDelegate(type: string, selector: string, fn: eventListener): this;
@@ -120,3 +120,4 @@ declare namespace $ {
     var create: (html: any) => Dom;
 }
 export default $;
+export { Dom };
