@@ -1,4 +1,4 @@
-Lighter Dom manipulation library. The production file size is 13K.
+Lighter DOM manipulation library. The production file size is 13K.
 
 # Install
 * npm install --save relax-dom
@@ -15,19 +15,19 @@ let $input : Dom;
 $input = $('input');
 ```
 
-# API
+# API`
 
 ## $( selector )
 
-function ( selector: string|HTMLElement ) : DOM
+function ( selector: string|HTMLElement ) : Dom
 
 If the type of `selector` parameter is string, the function will query by `document.querySelectorAll`.
 
 ## $.create( htmlOrTag )
 
-function( htmlOrTag:string ) : DOM
+function( htmlOrTag:string ) : Dom
 
-Create a DOM object from html or tagName.
+Create a Dom object from html or tagName.
 
 If the parameter includes `<` character, it will be considered as html string. 
 Otherwise, the parameter is considered as a tag name.
@@ -63,77 +63,77 @@ $.create('div').append($.fragment('<div>txt1</div>text2')).outerHtml(); //<div><
 In `create` method，text must be wrapped.
 
 
-## DOM API
+## Dom API
 
-### DOM# each( fn )
+### Dom# each( fn )
 
-### DOM# map( fn )
+### Dom# map( fn )
 
-### DOM# filter( fn )
+### Dom# filter( fn )
 
-### DOM# eq( index )
+### Dom# eq( index )
 
-### DOM# first( )
+### Dom# first( )
 
-### DOM# last( )
+### Dom# last( )
 
-### DOM# classNames( index=0 )
+### Dom# classNames( index=0 )
 
-### DOM# addClass( ...names )
-### DOM# removeClass( ...names )
-### DOM# toggleClass( ...names )
-### DOM# hasClass(name)
-### DOM# parent()
-### DOM# parents()
-### DOM# children()
-### DOM# prev()
-### DOM# next()
-### DOM# find(selector)
-### DOM# includes(node)
-### DOM# closest(selector)
-### DOM# match(selector)
-### DOM# attr(name:string,val?)
-### DOM# attr(name: {[name:string]:string} )
-### DOM# dataset(name,val?)
-### DOM# removeAttr(...names)
-### DOM# val(val?)
-### DOM# html(html?)
-### DOM# outerHtml(html?):this
+### Dom# addClass( ...names )
+### Dom# removeClass( ...names )
+### Dom# toggleClass( ...names )
+### Dom# hasClass(name)
+### Dom# parent()
+### Dom# parents()
+### Dom# children()
+### Dom# prev()
+### Dom# next()
+### Dom# find(selector)
+### Dom# includes(node)
+### Dom# closest(selector)
+### Dom# match(selector)
+### Dom# attr(name:string,val?)
+### Dom# attr(name: {[name:string]:string} )
+### Dom# dataset(name,val?)
+### Dom# removeAttr(...names)
+### Dom# val(val?)
+### Dom# html(html?)
+### Dom# outerHtml(html?):this
 如果传入html，则会替换掉原节点，同时返回的是原节点。如果需要替换后的新节点，需要重新获取。
-### DOM# text(txt?)
-### DOM# style(name:string, val?)
-### DOM# style(name: {[name]:string})
-### DOM# removeStyle(...names)
-### DOM# computeStyle(pseudoElt?)
-### DOM# maxScroll(index = 0) 
-### DOM# append(newNode)
-### DOM# prepend(newNode)
-### DOM# insertAfter(newNode)
-### DOM# insertBefore(newNode)
-### DOM# replace(newNode)
-### DOM# remove()
-### DOM# hide()
-### DOM# show(displayValue?)
-### DOM# clone(deep?)
-### DOM# offset(index = 0)
-### DOM# offsetRoot(rootNode, index=0)
-### DOM# on(type, fn)
-### DOM# off(type, fn?)
-### DOM# onDelegate(type, selector, fn)
-### DOM# offDelegate(type, selector?, fn?)
-### DOM# trigger(type,data?)
-### DOM# offsetHeight(index=0)
-### DOM# offsetWidth(index=0)
-### DOM# offsetTop(index=0)
-### DOM# offsetLeft(index=0)
-### DOM# clientHeight(index=0)
-### DOM# clientWidth(index=0)
-### DOM# clientTop(index=0)
-### DOM# clientLeft(index=0)
-### DOM# scrollHeight(index=0)
-### DOM# scrollWidth(index=0)
-### DOM# scrollTop(index=0)
-### DOM# scrollLeft(index=0)
+### Dom# text(txt?)
+### Dom# style(name:string, val?)
+### Dom# style(name: {[name]:string})
+### Dom# removeStyle(...names)
+### Dom# computeStyle(pseudoElt?)
+### Dom# maxScroll(index = 0) 
+### Dom# append(newNode)
+### Dom# prepend(newNode)
+### Dom# insertAfter(newNode)
+### Dom# insertBefore(newNode)
+### Dom# replace(newNode)
+### Dom# remove()
+### Dom# hide()
+### Dom# show(displayValue?)
+### Dom# clone(deep?)
+### Dom# offset(index = 0)
+### Dom# offsetRoot(rootNode, index=0)
+### Dom# on(type, fn)
+### Dom# off(type, fn?)
+### Dom# onDelegate(type, selector, fn)
+### Dom# offDelegate(type, selector?, fn?)
+### Dom# trigger(type,data?)
+### Dom# offsetHeight(index=0)
+### Dom# offsetWidth(index=0)
+### Dom# offsetTop(index=0)
+### Dom# offsetLeft(index=0)
+### Dom# clientHeight(index=0)
+### Dom# clientWidth(index=0)
+### Dom# clientTop(index=0)
+### Dom# clientLeft(index=0)
+### Dom# scrollHeight(index=0)
+### Dom# scrollWidth(index=0)
+### Dom# scrollTop(index=0)
+### Dom# scrollLeft(index=0)
 
 
 
