@@ -8,7 +8,7 @@ Lightweight DOM manipulation library.
 * const $ = require('relax-dom')
 
 # Typescript
-Typescript has been supported from v3.0.37.
+Typescript has been supported from v1.0.37.
 ```typescript
 import $, {Dom} from 'relax-dom';
 let $input : Dom;
